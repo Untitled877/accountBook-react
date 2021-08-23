@@ -6,7 +6,7 @@
 *{box-sizing: border-box;}
 *::before{box-sizing: border-box;}
 *::after{box-sizing: border-box;}
-
+//* { touch-action: pan-y; }
 ul, ol {
   list-style: none;
 }

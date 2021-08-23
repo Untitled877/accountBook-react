@@ -1,28 +1,26 @@
 import React from 'react';
 import {TopBar} from 'components/TopBar';
-import {Wrapper} from 'components/Wrapper'
+import {Wrapper} from 'components/Wrapper';
 import {Nav} from 'components/Nav';
 import {Main} from 'components/Main';
-import {Div} from 'components/Div';
+import {TagsSection} from 'components/Money/TagsSection';
+import {NoteSection} from 'components/Money/NoteSection';
+import {NumberPadSection} from 'components/Money/NumberPadSection';
+import styled from 'styled-components';
 
-
+const Space = styled.div`
+  flex-grow: 1;
+`;
 
 const Money: React.FC = () => {
   return (
     <Wrapper>
       <TopBar title="记一笔帐"/>
       <Main>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
+        <TagsSection/>
+        <Space/>
+        <NoteSection/>
+        <NumberPadSection/>
       </Main>
       <Nav/>
     </Wrapper>

@@ -4,6 +4,8 @@ import styled from 'styled-components';
 const MainWrapper = styled.div`
   flex-grow: 1;
   overflow: auto;
+  display: flex;
+  flex-direction: column;
 `;
 
 type Props = {

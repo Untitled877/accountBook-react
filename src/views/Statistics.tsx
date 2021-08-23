@@ -110,7 +110,6 @@ const Statistics: React.FC = () => {
         <Div>111</Div>
         <Div>111</Div>
         <Div>111</Div>
-        <Div>111</Div>
       </Main>
       <Nav/>
     </Wrapper>

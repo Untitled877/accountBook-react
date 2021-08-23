@@ -3,7 +3,6 @@ import styled from 'styled-components';
 
 const TopBarWrapper = styled.div`
   background: #F6F6F6;
-  //padding-bottom: 10px;
   .title {
     font-size: 24px;
     font-family: 'haibao',monospace;
