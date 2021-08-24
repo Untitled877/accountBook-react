@@ -1,10 +1,15 @@
-import React from 'react';
 import styled from 'styled-components';
 import Icon from 'components/Icon';
+
+import DatePicker from 'react-mobile-datepicker';
+import {useState} from 'react';
+import dayjs from 'dayjs';
+
 
 const NumberPadWrapper = styled.section`
   display: flex;
   flex-direction: column;
+
   .output {
     font-size: 30px;
     font-family: Consolas, monospace;
@@ -46,13 +51,16 @@ const NumberPadWrapper = styled.section`
       &:nth-child(13), &:nth-child(14) {
         border-right: 1px solid rgba(187, 187, 187, 0.7);
       }
+
       &:nth-child(15) {
         background: #333333;
         color: white;
       }
-      &:nth-child(4), &:nth-child(12),&:nth-child(15) {
+
+      &:nth-child(4), &:nth-child(12), &:nth-child(15) {
         font-size: 16px;
       }
+
       &:nth-child(4) {
         background: #f6f6f6;
       }
@@ -61,6 +69,24 @@ const NumberPadWrapper = styled.section`
 `;
 
 const NumberPadSection: React.FC = () => {
+  const [state, setState] = useState({
+    time: new Date(),
+    isOpen: false,
+  });
+
+  const handleClick = function() {
+    setState({ ...state, isOpen: true });
+  }
+
+  const handleCancel = function()  {
+    setState({ ...state, isOpen: false });
+  }
+
+  const handleSelect = function(time:any) {
+    setState({ time, isOpen: false });
+  }
+
+
   return (
     <NumberPadWrapper>
       <div className="output">0</div>
@@ -68,7 +94,9 @@ const NumberPadSection: React.FC = () => {
         <button>1</button>
         <button>2</button>
         <button>3</button>
-        <button>今天</button>
+        <button onClick={handleClick}>
+          {dayjs(state.time).format('YYYY/MM/DD')}
+        </button>
         <button>4</button>
         <button>5</button>
         <button>6</button>
@@ -83,6 +111,13 @@ const NumberPadSection: React.FC = () => {
         <button className="zero">0</button>
         <button className="ok">确定</button>
       </div>
+      <DatePicker
+        theme={"ios"}
+        value={state.time}
+        isOpen={state.isOpen}
+        onSelect={handleSelect}
+        onCancel={handleCancel} />
+
     </NumberPadWrapper>
   );
 };

@@ -4,7 +4,10 @@ import {Nav} from 'components/Nav';
 import {Main} from 'components/Main';
 import styled from 'styled-components';
 import Icon from 'components/Icon';
-import {Div} from 'components/Div';
+import {Button} from 'components/Button';
+import {Space} from 'components/Space';
+import {Center} from 'components/Center';
+import {Input} from 'components/Input';
 
 const Header = styled.header`
   background: #f6f6f6;
@@ -20,6 +23,13 @@ const Header = styled.header`
   }
 `;
 
+const InputWrapper = styled.div`
+  border-bottom: 1px solid rgba(187, 187, 187, 100);
+  background: white;
+  padding: 0 16px;
+  margin-top: 8px;
+`;
+
 const Tag: React.FC = () => {
   return (
     <Wrapper>
@@ -31,27 +41,14 @@ const Tag: React.FC = () => {
         <Icon/>
       </Header>
       <Main>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
-        <Div>111</Div>
+        <InputWrapper>
+          <Input/>
+        </InputWrapper>
+        <Center>
+          <Space/>
+          <Space/>
+          <Button>删除标签</Button>
+        </Center>
       </Main>
       <Nav/>
     </Wrapper>
