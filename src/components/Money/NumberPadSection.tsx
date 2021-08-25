@@ -1,108 +1,76 @@
-import styled from 'styled-components';
-import Icon from 'components/Icon';
-
 import DatePicker from 'react-mobile-datepicker';
-import {useState} from 'react';
+import React, {useState} from 'react';
 import dayjs from 'dayjs';
+import {NumberPadWrapper} from './NumberPadSection/NumberPadWrapper';
+import {generateOutput} from 'components/Money/NumberPadSection/generateOutput';
 
+type Props = {
+  value: number
+  date:string
+  onChange: (value: number) => void
+  onOk?: () => void
+}
 
-const NumberPadWrapper = styled.section`
-  display: flex;
-  flex-direction: column;
-
-  .output {
-    font-size: 30px;
-    font-family: Consolas, monospace;
-    padding: 3px 16px;
-    text-align: right;
-    border-top: 1px solid rgba(187, 187, 187, 0.7);
-  }
-
-  .buttons {
-    border-top: 1px solid rgba(187, 187, 187, 0.7);
-
-    > button {
-      width: 25%;
-      font-size: 20px;
-      padding: 10px 0;
-      line-height: 30px;
-      float: left;
-      background: transparent;
-      border: none;
-
-      &.ok {
-        float: right;
-      }
-
-      &.zero {
-        width: 50%;
-      }
-
-      &:nth-child(1), &:nth-child(2), &:nth-child(3),
-      &:nth-child(4), &:nth-child(5), &:nth-child(6),
-      &:nth-child(7), &:nth-child(8), &:nth-child(9),
-      &:nth-child(10), &:nth-child(11), &:nth-child(12) {
-        border-bottom: 1px solid rgba(187, 187, 187, 0.7);
-      }
-
-      &:nth-child(1), &:nth-child(2), &:nth-child(3),
-      &:nth-child(5), &:nth-child(6), &:nth-child(7),
-      &:nth-child(9), &:nth-child(10), &:nth-child(11),
-      &:nth-child(13), &:nth-child(14) {
-        border-right: 1px solid rgba(187, 187, 187, 0.7);
-      }
-
-      &:nth-child(15) {
-        background: #333333;
-        color: white;
-      }
-
-      &:nth-child(4), &:nth-child(12), &:nth-child(15) {
-        font-size: 16px;
-      }
-
-      &:nth-child(4) {
-        background: #f6f6f6;
-      }
-    }
-  }
-`;
-
-const NumberPadSection: React.FC = () => {
+const NumberPadSection: React.FC<Props> = (props) => {
   const [state, setState] = useState({
     time: new Date(),
     isOpen: false,
   });
 
-  const handleClick = function() {
-    setState({ ...state, isOpen: true });
-  }
+  const handleClick = function () {
+    setState({...state, isOpen: true});
+  };
 
-  const handleCancel = function()  {
-    setState({ ...state, isOpen: false });
-  }
+  const handleCancel = function () {
+    setState({...state, isOpen: false});
+  };
 
-  const handleSelect = function(time:any) {
-    setState({ time, isOpen: false });
-  }
+  const handleSelect = function (time: any) {
+    setState({time, isOpen: false});
+  };
 
+  const [output, _setOutput] = useState(props.value.toString());
+  const setOutput = (output: string) => {
+    let newOutput;
+    if (output.length > 16) {
+      newOutput = output.slice(0, 16);
+    } else if(output.length === 0) {
+      newOutput = '0';
+    } else {
+      newOutput = output;
+    }
+    _setOutput(newOutput);
+    props.onChange(parseFloat(newOutput));
+  };
+
+  const onClickButtonWrapper = (e: React.MouseEvent) => {
+    const text = (e.target as HTMLButtonElement).textContent;
+    if(text === null) { return; }
+    if (text === '确定') {
+      if(props.onOk) {
+        props.onOk();
+      }
+      return;
+    }
+    if ('0123456789.'.split('').concat(['清空','删除']).indexOf(text) >= 0) {
+      setOutput(generateOutput(text, output));
+    }
+  };
 
   return (
     <NumberPadWrapper>
-      <div className="output">0</div>
-      <div className="buttons">
+      <div className="output">{output}</div>
+      <div className="buttons" onClick={onClickButtonWrapper}>
         <button>1</button>
         <button>2</button>
         <button>3</button>
-        <button onClick={handleClick}>
+        <button onClick={handleClick} className="dateButton">
           {dayjs(state.time).format('YYYY/MM/DD')}
         </button>
         <button>4</button>
         <button>5</button>
         <button>6</button>
-        <button>
-          <Icon name="delete"/>
-        </button>
+        <button>删除</button>
         <button>7</button>
         <button>8</button>
         <button>9</button>
@@ -112,12 +80,11 @@ const NumberPadSection: React.FC = () => {
         <button className="ok">确定</button>
       </div>
       <DatePicker
-        theme={"ios"}
+        theme={'ios'}
         value={state.time}
         isOpen={state.isOpen}
         onSelect={handleSelect}
-        onCancel={handleCancel} />
-
+        onCancel={handleCancel}/>
     </NumberPadWrapper>
   );
 };

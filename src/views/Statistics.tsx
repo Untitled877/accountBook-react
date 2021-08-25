@@ -88,18 +88,20 @@ const Items = styled.div`
   .record {
     padding: 8px 12px;
     flex-shrink: 0;
-  }
-
-  .notes {
-    margin-right: auto;
-    margin-left: 16px;
-    color: #999999;
+    > .tagName {
+      white-space: nowrap;
+    }
+    > .notes {
+      margin-right: auto;
+      margin-left: 16px;
+      color: #999999;
+    }
   }
 `;
 
 const Statistics: React.FC = () => {
   const grounpedList = [
-    {id: 1, text: '餐饮', note: '备注', type: '-', amount: 100},
+    {id: 1, text: '餐饮', note: '备注很多字很多字很多字备注很多字很多字很多字备注很多字很多字很多字', type: '-', amount: 100},
     {id: 2, text: '餐饮', note: '备注', type: '-', amount: 100},
     {id: 3, text: '餐饮', note: '备注', type: '-', amount: 100},
     {id: 4, text: '餐饮', note: '备注', type: '-', amount: 100},
@@ -154,17 +156,15 @@ const Statistics: React.FC = () => {
                 2021/08/24
                 <span>支出：100 收入：0.00</span>
               </div>
-              <ol>
                 {
                   grounpedList.map(record => (
                     <Link className="record" to={'/statistics/' + record.id} key={record.id}>
-                      <span>{record.text}</span>
-                      <span className="notes">{record.note}</span>
+                      <span className="tagName">{record.text}</span>
+                      <span className="notes oneLine">{record.note}</span>
                       <span className="amount">{record.type}{record.amount}</span>
                     </Link>
                   ))
                 }
-              </ol>
             </li>
           </ol>
         </Items>

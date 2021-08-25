@@ -56,6 +56,7 @@ const RecordWrapper = styled.div`
       > .label {
         padding-right: 20px;
         color: #8E8B8B;
+        white-space: nowrap;
       }
     }
   }

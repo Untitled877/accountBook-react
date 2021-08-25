@@ -42,7 +42,7 @@ const Tag: React.FC = () => {
       </Header>
       <Main>
         <InputWrapper>
-          <Input/>
+          <Input label="标签名：" type="text" placeholder="在这里输入新的标签名~"/>
         </InputWrapper>
         <Center>
           <Space/>

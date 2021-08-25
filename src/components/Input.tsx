@@ -16,12 +16,15 @@ const Label = styled.label`
     border: none;
   }
 `;
-
-const Input: React.FC = () => {
+type Props = {
+  label: string;
+} & React.InputHTMLAttributes<HTMLInputElement>;
+const Input: React.FC<Props> = (props) => {
+  const {label, children, ...rest} = props;
   return (
     <Label>
-      <span>标签名：</span>
-      <input placeholder="输入新的标签名~"/>
+      <span>{props.label}</span>
+      <input {...rest}/>
     </Label>
   );
 };
