@@ -8,7 +8,7 @@ type Props = {
   value: number
   onChange: (value: number) => void
   dateChange: (createAt:Date) => void
-  onOk?: () => void
+  onOk?: () => boolean
 }
 
 const NumberPadSection: React.FC<Props> = (props) => {
@@ -49,7 +49,13 @@ const NumberPadSection: React.FC<Props> = (props) => {
     if(text === null) { return; }
     if (text === '确定') {
       if(props.onOk) {
-        props.onOk();
+        if(props.onOk()) {
+          _setOutput('0');
+          setState({
+            time: new Date(),
+            isOpen: false,
+          })
+        }
       }
       return;
     }

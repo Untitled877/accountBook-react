@@ -40,8 +40,9 @@ const Money: React.FC = () => {
     if (addRecord(newRecord)) {
       alert('保存成功');
       setSelected(defaultFormData);
+      return true;
     }
-    // 将页面置为初始
+    return false;
   };
 
   return (
