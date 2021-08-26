@@ -5,6 +5,7 @@ import 'element-theme-default';
 import Icon from 'components/Icon';
 import {TagsWrapper} from './TagsSection/TagsWrapper';
 import {useTags} from 'hooks/useTags';
+import cs from 'classnames';
 
 type Props = {
   category: '-' | '+'
@@ -20,16 +21,15 @@ type Tag = {
 }
 
 const TagsSection: React.FC<Props> = (props) => {
-  const {tags} = useTags();
-  console.log(tags);
-  // const selectedTagId = props.value;
+  const {tags, addTag} = useTags();
+  const selectedTagId = props.value;
   const category = props.category;
   const tagGroup = category === '-' ? tags.filter(t => t.category === '-')
     : tags.filter(t => t.category === '+');
 
   const getItemNum = () => {
     let itemNumArr = [];
-    if(tagGroup) {
+    if (tagGroup) {
       const itemNum = Math.ceil((tagGroup.length + 1) / 8);
       for (let i = 0; i < itemNum; i++) {
         itemNumArr.push(i);
@@ -39,11 +39,16 @@ const TagsSection: React.FC<Props> = (props) => {
       return [];
     }
   };
-  console.log(getItemNum());
-
+  const onToggleTag = (tagId: number) => {
+    if(tagId === selectedTagId) {
+      return;
+    } else {
+      props.onChange(tagId);
+    }
+  };
+  const getClass = (tagId: number) => selectedTagId === tagId ? 'selected' : '';
   const sliceArray = function (array: Array<Tag>, size: number) {
-    let result = [];
-    if(array) {
+      let result = [];
       for (let i = 0; i < Math.ceil(array.length / size); i++) {
         let start = i * size;
         let end = start + size;
@@ -51,10 +56,7 @@ const TagsSection: React.FC<Props> = (props) => {
       }
       return result;
     }
-    return [];
-  };
-
-  //console.log(sliceArray(tagGroup, 8)[1]);
+  ;
 
   return (
     <TagsWrapper>
@@ -65,16 +67,27 @@ const TagsSection: React.FC<Props> = (props) => {
               <Carousel.Item key={i}>
                 <div className="tagList">
                   {
-                    (sliceArray(tagGroup, 8)[i]) ? (sliceArray(tagGroup, 8)[i]).map((item, index) => {
+                    (sliceArray(tagGroup, 8)[i]) && (sliceArray(tagGroup, 8)[i]).map((item, index) => {
                       return (
-                        <div className="tagWrapper" key={index}>
+                        <div className={cs('tagWrapper', getClass(item.id))} key={index}
+                             onClick={() => onToggleTag(item.id)}>
                           <div className="icon-wrapper">
                             <Icon name={item.iconName}/>
                           </div>
                           <span>{item.text}</span>
                         </div>
                       );
-                    }) : ''
+                    })
+                  }
+                  {
+                    i === getItemNum()[getItemNum().length - 1] ?
+                      <div className="tagWrapper" onClick={()=>addTag(category)}>
+                        <div className="icon-wrapper">
+                          <Icon name="add"/>
+                        </div>
+                        <span>自定义</span>
+                      </div>
+                      : ''
                   }
                 </div>
               </Carousel.Item>

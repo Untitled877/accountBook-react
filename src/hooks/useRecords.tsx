@@ -24,7 +24,7 @@ export const useRecords = () => {
   }, records);
 
   const addRecord = (newRecord: RecordItem) => {
-    if(!newRecord.tagId) {
+    if(!newRecord.tagId || newRecord.tagId === -1) {
       alert('标签不能为空');
       return false;
     }

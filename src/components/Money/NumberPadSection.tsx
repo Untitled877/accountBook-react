@@ -6,8 +6,8 @@ import {generateOutput} from 'components/Money/NumberPadSection/generateOutput';
 
 type Props = {
   value: number
-  date:string
   onChange: (value: number) => void
+  dateChange: (createAt:Date) => void
   onOk?: () => void
 }
 
@@ -27,6 +27,7 @@ const NumberPadSection: React.FC<Props> = (props) => {
 
   const handleSelect = function (time: any) {
     setState({time, isOpen: false});
+    props.dateChange(time);
   };
 
   const [output, _setOutput] = useState(props.value.toString());

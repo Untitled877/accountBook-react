@@ -7,9 +7,9 @@ import {TagsSection} from 'components/Money/TagsSection';
 import {NoteSection} from 'components/Money/NoteSection';
 import {NumberPadSection} from 'components/Money/NumberPadSection';
 import styled from 'styled-components';
-import dayjs from 'dayjs';
 import {useRecords} from 'hooks/useRecords';
 import {createId} from 'lib/createId';
+import dayjs from 'dayjs';
 
 const Space = styled.div`
   flex-grow: 1;
@@ -22,22 +22,26 @@ const defaultFormData = {
   note: '',
   category: '-' as Category,
   amount: 0,
-  createAt: dayjs(new Date()).format('YYYY/MM/DD')
 };
 
 const Money: React.FC = () => {
   const [selected, setSelected] = useState(defaultFormData);
+  const [createAt, setCreateAt] = useState(new Date());
   const {addRecord} = useRecords();
   const onChange = (obj: Partial<typeof selected>) => {
     setSelected({...selected, ...obj});
   };
-
+  const submitDate = (createAt:Date) => {
+    setCreateAt(createAt);
+  }
   const submit = () => {
-    const newRecord = {id: createId(), ...selected};
+    const recordDate = dayjs(createAt).format('YYYY/MM/DD');
+    const newRecord = {id: createId(), ...selected, createAt:recordDate};
     if (addRecord(newRecord)) {
       alert('保存成功');
       setSelected(defaultFormData);
     }
+    // 将页面置为初始
   };
 
   return (
@@ -52,8 +56,8 @@ const Money: React.FC = () => {
         <NoteSection value={selected.note}
                      onChange={note => onChange({note})}/>
         <NumberPadSection value={selected.amount}
-                          date={selected.createAt}
-                          onChange={amount => onChange({amount})}
+                          onChange={(amount) => onChange({amount})}
+                          dateChange={(createAt) => submitDate(createAt)}
                           onOk={submit}
         />
       </Main>
