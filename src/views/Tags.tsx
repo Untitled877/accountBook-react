@@ -41,9 +41,10 @@ const Tags:React.FC = () => {
     {id:10, name:'标签名'},
 
   ];
+  const onchange = () => {}
   return (
     <Wrapper>
-      <TopBar title="标签管理"/>
+      <TopBar title="标签管理" value='-' onChange={onchange}/>
       <Main>
         <TagList>
           {tags.map(tag =>

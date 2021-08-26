@@ -1,21 +1,24 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 
 const TopBarWrapper = styled.div`
   background: #F6F6F6;
+
   .title {
     font-size: 24px;
-    font-family: 'haibao',monospace;
+    font-family: 'haibao', monospace;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 10px 0;
   }
+
   ul {
     display: flex;
     text-align: center;
     justify-content: center;
     padding: 10px 0;
+
     > li {
       background: white;
       font-size: 16px;
@@ -36,19 +39,29 @@ const TopBarWrapper = styled.div`
 `;
 
 type Props = {
-  title: string;
+  title: string
+  value: '-' | '+'
+  onChange: (value: '-' | '+') => void
 }
 
-const TopBar:React.FC<Props> = (props) => {
+const TopBar: React.FC<Props> = (props) => {
+  const categoryMap = {'-': '支出', '+': '收入'};
+  const [categoryList] = useState<('+' | '-')[]>(['-', '+']);
+  const category = props.value;
   return (
     <TopBarWrapper>
       <div className="title">{props.title}</div>
       <ul className="tabs">
-        <li className="selected">支出</li>
-        <li>收入</li>
+        {categoryList.map(c =>
+          <li key={c}
+              className={category === c ? 'selected' : ''}
+              onClick={() => {props.onChange(c);}}>
+            {categoryMap[c]}
+          </li>
+        )}
       </ul>
     </TopBarWrapper>
-  )
+  );
 };
 
 export {TopBar};

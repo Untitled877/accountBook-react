@@ -11,24 +11,18 @@ function App() {
   return (
     <Router>
       <Switch>
-        <Route exact path="/tags">
-          <Tags/>
+        <Route exact path="/tags" component={Tags}>
         </Route>
-        <Route exact path="/tags/:id">
-          <Tag/>
+        <Route exact path="/tags/:id" component={Tag}>
         </Route>
-        <Route exact path="/money">
-          <Money/>
+        <Route exact path="/money" component={Money}>
         </Route>
-        <Route exact path="/statistics">
-          <Statistics/>
+        <Route exact path="/statistics" component={Statistics}>
         </Route>
-        <Route exact path="/statistics/:recordId">
-          <Record/>
+        <Route exact path="/statistics/:recordId" component={Record}>
         </Route>
         <Redirect exact from="/" to="/money"/>
-        <Route path="*">
-          <NoMatch/>
+        <Route path="*" component={NoMatch}>
         </Route>
       </Switch>
     </Router>
