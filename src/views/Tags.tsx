@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Nav} from 'components/Nav';
 import {Wrapper} from 'components/Wrapper';
 import {TopBar} from 'components/TopBar';
@@ -9,6 +9,7 @@ import Icon from 'components/Icon';
 import {Space} from 'components/Space';
 import {Center} from 'components/Center';
 import {Button} from 'components/Button';
+import {useTags} from 'hooks/useTags';
 
 const TagList = styled.ol`
   font-size: 16px;
@@ -28,29 +29,21 @@ const TagList = styled.ol`
 `;
 
 const Tags:React.FC = () => {
-  const tags = [
-    {id:1, name:'标签名'},
-    {id:2, name:'标签名'},
-    {id:3, name:'标签名'},
-    {id:4, name:'标签名'},
-    {id:5, name:'标签名'},
-    {id:6, name:'标签名'},
-    {id:7, name:'标签名'},
-    {id:8, name:'标签名'},
-    {id:9, name:'标签名'},
-    {id:10, name:'标签名'},
-
-  ];
-  const onchange = () => {}
+  const [category, setCategory] = useState<'+'|'-'>('-');
+  const {tags, addTag} = useTags();
+  const onChange = () => {
+    setCategory(category === '-' ? '+' : '-');
+  }
+  const tagList = tags.filter(tag => tag.category === category);
   return (
     <Wrapper>
-      <TopBar title="标签管理" value='-' onChange={onchange}/>
+      <TopBar title="标签管理" value={category} onChange={onChange}/>
       <Main>
         <TagList>
-          {tags.map(tag =>
+          {tagList.map(tag =>
             <li key={tag.id}>
               <Link to={'/tags/' + tag.id}>
-                <span className="oneLine">{tag.name}</span>
+                <span className="oneLine">{tag.text}</span>
                 <Icon name="right"/>
               </Link>
             </li>
@@ -59,7 +52,7 @@ const Tags:React.FC = () => {
         <Center>
           <Space />
           <Space />
-          <Button>新增标签</Button>
+          <Button onClick={()=>addTag(category)}>新增标签</Button>
         </Center>
       </Main>
       <Nav/>

@@ -14,13 +14,13 @@ const useTags = () => {
   const [tags, setTags] = useState<Tag[]>([]);
   useEffect(() => {
     let localTags = JSON.parse(window.localStorage.getItem('tags') || '[]');
-    if(localTags.length === 0) {
-      for(let i = 0; i < localTagList.length; i++) {
+    if (localTags.length === 0) {
+      for (let i = 0; i < localTagList.length; i++) {
         localTags.push({
           id: createId(),
-          category:localTagList[i].category,
-          iconName:localTagList[i].iconName,
-          text:localTagList[i].text
+          category: localTagList[i].category,
+          iconName: localTagList[i].iconName,
+          text: localTagList[i].text
         });
       }
     }
@@ -32,10 +32,10 @@ const useTags = () => {
   }, tags);
 
   const findTag = (id: number) => tags.filter(tag => tag.id === id)[0];
-  const findTagIndex = (id:number) => {
+  const findTagIndex = (id: number) => {
     let result = -1;
-    for(let i = 0; i < tags.length; i++) {
-      if(tags[i].id === id) {
+    for (let i = 0; i < tags.length; i++) {
+      if (tags[i].id === id) {
         result = i;
         break;
       }
@@ -43,36 +43,38 @@ const useTags = () => {
     return result;
   };
 
-  // 第二个参数是一个Object类型
-  const updateTag = (id:number, {name}:{name:string}) => {
-    setTags(tags.map(tag => tag.id === id ? {...tag, id, name:name} : tag));
+  const updateTag = (id: number, text: string) => {
+      setTags(tags.map(tag => tag.id === id ? {...tag, id, text: text} : tag));
   };
 
-  const deleteTag = (id:number) => {
+  const deleteTag = (id: number) => {
     setTags(tags.filter(tag => tag.id !== id));
-  }
+  };
 
-  const addTag = (category:string) => {
+  const addTag = (category: string) => {
     const tagName = window.prompt('请输入新标签的名称');
-    if(tagName !== null && tagName !== '') {
+    if (tagName !== null && tagName !== '') {
+      if(tagName.length > 4) {
+        return window.alert('标签名不可超过4个字');
+      }
       const textList = (tags.filter(tag => tag.category === category)).map(tag => tag.text);
-      if(textList.indexOf(tagName) >= 0) {
+      if (textList.indexOf(tagName) >= 0) {
         window.alert('标签名已存在');
         return;
       } else {
-        setTags([...tags, {id:createId(), category:category, iconName:'default', text:tagName}]);
+        setTags([...tags, {id: createId(), category: category, iconName: 'default', text: tagName}]);
       }
     } else {
       return;
     }
   };
 
-  const getName = (id:number) => {
+  const getName = (id: number) => {
     const tag = tags.filter(t => t.id === id)[0];
     return tag ? tag.text : '';
-  }
+  };
 
-  return {tags, setTags,findTag, findTagIndex, updateTag, deleteTag, addTag, getName}
+  return {tags, setTags, findTag, findTagIndex, updateTag, deleteTag, addTag, getName};
 };
 
 

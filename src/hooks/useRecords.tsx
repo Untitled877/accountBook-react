@@ -24,6 +24,8 @@ export const useRecords = () => {
   }, records);
 
   const addRecord = (newRecord: RecordItem) => {
+    // 这里还有一种情况是 通过record 编辑路由过来的。
+    // 所以名字需要改，还需要添加判断
     if(!newRecord.tagId || newRecord.tagId === -1) {
       alert('标签不能为空');
       return false;
