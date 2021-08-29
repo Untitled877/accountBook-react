@@ -21,6 +21,8 @@ function App() {
         </Route>
         <Route exact path="/statistics/:recordId" component={Record}>
         </Route>
+        <Route exact path="/money/:recordId/edit" component={Money}>
+        </Route>
         <Redirect exact from="/" to="/money"/>
         <Route path="*" component={NoMatch}>
         </Route>

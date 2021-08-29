@@ -3,16 +3,13 @@ import {useUpdate} from 'hooks/useUpdate';
 
 export type RecordItem = {
   id: number
-  tagId: number
+  tagName: string
+  tagId: number // 这里应该有tagName 防止在删除标签后 记录里无法根据id找到tag的名字（只保留name字段？）
   note: string
   category: '+' | '-'
   amount: number
   createAt: string
 }
-
-// 为了能定位到每一条记录并且对其进行更改，
-// 需要给每一条记录添加一个主键 所以加入id字段
-// 每一条recordItem 的 类型应该是：id type tagId(仅可以选择一个标签) note amount createAt
 
 export const useRecords = () => {
   const [records, setRecords] = useState<RecordItem[]>([]);
@@ -24,19 +21,40 @@ export const useRecords = () => {
   }, records);
 
   const addRecord = (newRecord: RecordItem) => {
-    // 这里还有一种情况是 通过record 编辑路由过来的。
-    // 所以名字需要改，还需要添加判断
-    if(!newRecord.tagId || newRecord.tagId === -1) {
+    if (!newRecord.tagId || newRecord.tagId === -1) {
       alert('标签不能为空');
       return false;
     }
-    if(newRecord.amount <= 0) {
+    if (newRecord.amount <= 0) {
       alert('金额不能为0');
       return false;
     }
     setRecords([...records, newRecord]);
     return true;
+  };
+
+  const getRecord = (id: number) => {
+    return records.filter(r => r.id === id);
+  };
+
+  const deleteRecord = (id: number) => {
+    setRecords(records.filter(r => r.id !== id));
+  };
+
+  type EditRecord = Omit<RecordItem, 'id'>;
+
+  const updateRecord = (id:number, record:EditRecord) => {
+    if (!record.tagId || record.tagId === -1) {
+      alert('标签不能为空');
+      return false;
+    }
+    if (record.amount <= 0) {
+      alert('金额不能为0');
+      return false;
+    }
+    setRecords(records.map(r => r.id === id ? {id, ...record} : r));
+    return true;
   }
 
-  return {records, addRecord};
+  return {records, addRecord, getRecord, deleteRecord, updateRecord};
 };

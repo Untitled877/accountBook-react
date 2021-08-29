@@ -1,17 +1,19 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Nav} from 'components/Nav';
 import {Main} from 'components/Main';
 import {Wrapper} from 'components/Wrapper';
 import {TopDiv} from 'components/TopDiv';
 import styled from 'styled-components';
-// import {Link} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 import {DatePicker} from 'element-react';
 import 'element-theme-default';
 
 import dayjs from 'dayjs';
 import {RecordItem, useRecords} from 'hooks/useRecords';
-import {useTags} from 'hooks/useTags';
+import clone from 'lib/clone';
+import {Center} from 'components/Center';
+import {Space} from 'components/Space';
 
 const Items = styled.div`
   .topBar, .record {
@@ -44,10 +46,6 @@ const Items = styled.div`
 
 const Statistics: React.FC = () => {
   const {records} = useRecords();
-  const {getName} = useTags();
-
-  const [monthTotalExpend, setMonthTotalExpend] = useState(0);
-  const [monthTotalIncome, setMonthTotalIncome] = useState(0);
 
   const [selectedDate, setSelectedDate] = useState(new Date());
   const year = dayjs(selectedDate).year();
@@ -57,31 +55,16 @@ const Statistics: React.FC = () => {
   const [categoryList] = useState<('details' | 'charts')[]>(['details', 'charts']);
   const [category, setCategory] = useState('details');
 
-  console.log(records);
-  // const hash: {[K:string]:RecordItem[]} = {};
-  // const selectedRecords = records.filter(r => parseInt(r.createAt.split('/')[0]) === year
-  //   && parseInt(r.createAt.split('/')[1]) === month);
-  //
-  // selectedRecords.forEach(r => {
-  //   const key = r.createAt;
-  //   if(!(key in hash)) {
-  //     hash[key] = [];
-  //   }
-  //   hash[key].push(r);
-  // })
-  //
-  // const array = Object.entries(hash).sort((a, b) => {
-  //   if(a[0] === b[0]) return 0;
-  //   if(a[0] > b[0]) return -1;
-  //   if(a[0] < b[0]) return 1;
-  //   return 0;
-  // });
-  // console.log(array);
+  const [monthTotalExpend, setMonthTotalExpend] = useState(0);
+  const [monthTotalIncome, setMonthTotalIncome] = useState(0);
+
+  const newList = clone(records);
 
   const getGroupedRecords = () => {
-    const hash: {[K:string]:RecordItem[]} = {};
-    const selectedRecords = records.filter(r => parseInt(r.createAt.split('/')[0]) === year
-      && parseInt(r.createAt.split('/')[1]) === month);
+    const selectedRecords = newList.filter(r => parseInt(r.createAt.split('/')[0]) === year
+      && parseInt(r.createAt.split('/')[1]) === month)
+      .sort((a, b) => parseInt(b.createAt.split('/')[2])
+        - parseInt(a.createAt.split('/')[2]));
     if (selectedRecords.length === 0) {
       return [];
     }
@@ -91,7 +74,12 @@ const Statistics: React.FC = () => {
       totalIncome: number,
       items: RecordItem[]
     }[];
-    const result: Result = [{title: selectedRecords[0].createAt, totalExpend: 0.00, totalIncome: 0.00, items: [selectedRecords[0]]}];
+    const result: Result = [{
+      title: selectedRecords[0].createAt,
+      totalExpend: 0.00,
+      totalIncome: 0.00,
+      items: [selectedRecords[0]]
+    }];
     for (let i = 1; i < selectedRecords.length; i++) {
       const current = selectedRecords[i];
       const last = result[result.length - 1];
@@ -101,7 +89,7 @@ const Statistics: React.FC = () => {
         result.push({title: current.createAt, totalExpend: 0.00, totalIncome: 0.00, items: [current]});
       }
     }
-    result.map(group => {
+    result.forEach(group => {
       group.totalExpend = group.items.reduce((sum, item) => {
         return sum + (item.category === '-' ? item.amount : 0);
       }, 0);
@@ -109,43 +97,79 @@ const Statistics: React.FC = () => {
         return sum + (item.category === '+' ? item.amount : 0);
       }, 0);
     });
-
-    // for (let i = 0; i < result.length; i++) {
-    //   this.monthTotalExpend += (result as Result)[i].totalExpend;
-    //   this.monthTotalIncome += (result as Result)[i].totalIncome;
-    // }
-
     return result;
-  }
+  };
 
-  if(getGroupedRecords() && getGroupedRecords()[0]) {
-    console.log(getGroupedRecords()[0].totalExpend)
+  const getMonthTotal = (category: string) => {
+    let total = 0;
+    let result = getGroupedRecords();
+    if (result.length > 0) {
+      for (let i = 0; i < result.length; i++) {
+        if (category === '-') {
+          total += result[i].totalExpend;
+        } else {
+          total += result[i].totalIncome;
+        }
+      }
+    }
+    return total;
+  };
+
+  useEffect(() => {
+    setMonthTotalExpend(getMonthTotal('-'));
+    setMonthTotalIncome(getMonthTotal('+'));
+  }, [getGroupedRecords()]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const addZero = (num: number) => {
+    return num < 10 ? '0'+num : num + '';
+  }
+  const beautify = (date:string) => {
+    const today = dayjs(new Date()).format('YYYY/MM/DD');
+    const todayYear = today.split('/')[0];
+    const todayMonth = today.split('/')[1];
+    const todayDay = today.split('/')[2];
+    const recordDay = date.split('/')[2];
+    if( date === today) {
+      return '今天';
+    } else if(year.toString() === todayYear
+      && addZero(month) === todayMonth
+      && parseInt(recordDay) === parseInt(todayDay) -1) {
+      return '昨天';
+    } else if(todayYear === year.toString()){
+      return date.substr(5);
+    } else {
+      return date;
+    }
   }
 
   const detailsContent = () => (
     <Items>
       <ol className="records">
         {
-
-          // groupedRecords() && groupedRecords().forEach((group, index) => {
-          //     <li key={index}>
-          //         <div className="topBar">
-          //           {group.title}
-          //           <span>支出：{group.totalExpend} 收入：{group.totalIncome}</span>
-          //         </div>
-          //         <ol>
-          //           {
-          //             group.items.forEach((item) => {
-          //               <Link className="record" to={'/statistics/' + item.id} key={item.id}>
-          //                 <span className="tagName">{item.tagId}</span>
-          //                 <span className="notes oneLine">{item.note}</span>
-          //                 <span className="amount">{item.category}{item.amount}</span>
-          //               </Link>
-          //             })
-          //           }
-          //         </ol>
-          //     </li>
-          // })
+          getGroupedRecords().length <= 0 ? <div><Space/><Space/><Center>本月还没有账单记录哦~</Center></div> :
+          getGroupedRecords().map((group, index) => {
+            return (
+              <li key={index}>
+                <div className="topBar">
+                  {beautify(group.title)}
+                  <span>支出：{group.totalExpend} 收入：{group.totalIncome}</span>
+                </div>
+                <ol>
+                  {
+                    group.items.map((item) => {
+                      return (
+                        <Link className="record" to={'/statistics/' + item.id} key={item.id}>
+                          <span className="tagName">{item.tagName}</span>
+                          <span className="notes oneLine">{item.note}</span>
+                          <span className="amount">{item.category}{item.amount}</span>
+                        </Link>
+                      );
+                    })
+                  }
+                </ol>
+              </li>
+            );
+          })
         }
       </ol>
     </Items>

@@ -10,12 +10,18 @@ import styled from 'styled-components';
 import {useRecords} from 'hooks/useRecords';
 import {createId} from 'lib/createId';
 import dayjs from 'dayjs';
+import {useTags} from 'hooks/useTags';
+import {useHistory, useParams} from 'react-router-dom';
 
 const Space = styled.div`
   flex-grow: 1;
 `;
 
 type Category = '-' | '+'
+
+type Params = {
+  recordId: string
+}
 
 const defaultFormData = {
   tagId: -1,
@@ -27,23 +33,38 @@ const defaultFormData = {
 const Money: React.FC = () => {
   const [selected, setSelected] = useState(defaultFormData);
   const [createAt, setCreateAt] = useState(new Date());
-  const {addRecord} = useRecords();
+  const {addRecord, updateRecord} = useRecords();
+  const {getName} = useTags();
   const onChange = (obj: Partial<typeof selected>) => {
     setSelected({...selected, ...obj});
   };
-  const submitDate = (createAt:Date) => {
+  const submitDate = (createAt: Date) => {
     setCreateAt(createAt);
-  }
+  };
+  const isEdit = (useHistory().location.pathname.indexOf('edit') >= 0);
+  const {recordId: recordIdString} = useParams<Params>();
   const submit = () => {
     const recordDate = dayjs(createAt).format('YYYY/MM/DD');
-    const newRecord = {id: createId(), ...selected, createAt:recordDate};
-    if (addRecord(newRecord)) {
-      alert('保存成功');
-      setSelected(defaultFormData);
-      return true;
+    const tagName = getName(selected.tagId);
+
+    if (!isEdit) {
+      const newRecord = {id: createId(), tagName: tagName, ...selected, createAt: recordDate};
+      if (addRecord(newRecord)) {
+        window.alert('保存成功');
+        setSelected(defaultFormData);
+        return true;
+      }
+      return false;
+    } else {
+      if (updateRecord(parseInt(recordIdString), {tagName:tagName, ...selected, createAt:recordDate})) {
+        window.alert('修改成功');
+        setSelected(defaultFormData);
+        return true;
+      }
+      return false;
     }
-    return false;
   };
+
 
   return (
     <Wrapper>
