@@ -115,7 +115,6 @@ const Record: React.FC = () => {
         record ? recordContent()
           : <div><Center><Space/><Space/>该记录已删除</Center></div>
       }
-
     </RecordWrapper>
   );
 };

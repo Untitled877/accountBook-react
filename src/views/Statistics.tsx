@@ -14,6 +14,7 @@ import {RecordItem, useRecords} from 'hooks/useRecords';
 import clone from 'lib/clone';
 import {Center} from 'components/Center';
 import {Space} from 'components/Space';
+import {Chart} from 'components/Chart';
 
 const Items = styled.div`
   .topBar, .record {
@@ -121,63 +122,112 @@ const Statistics: React.FC = () => {
   }, [getGroupedRecords()]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const addZero = (num: number) => {
-    return num < 10 ? '0'+num : num + '';
-  }
-  const beautify = (date:string) => {
+    return num < 10 ? '0' + num : num + '';
+  };
+  const beautify = (date: string) => {
     const today = dayjs(new Date()).format('YYYY/MM/DD');
     const todayYear = today.split('/')[0];
     const todayMonth = today.split('/')[1];
     const todayDay = today.split('/')[2];
     const recordDay = date.split('/')[2];
-    if( date === today) {
+    if (date === today) {
       return '今天';
-    } else if(year.toString() === todayYear
+    } else if (year.toString() === todayYear
       && addZero(month) === todayMonth
-      && parseInt(recordDay) === parseInt(todayDay) -1) {
+      && parseInt(recordDay) === parseInt(todayDay) - 1) {
       return '昨天';
-    } else if(todayYear === year.toString()){
+    } else if (todayYear === year.toString()) {
       return date.substr(5);
     } else {
       return date;
     }
-  }
+  };
 
   const detailsContent = () => (
     <Items>
       <ol className="records">
         {
           getGroupedRecords().length <= 0 ? <div><Space/><Space/><Center>本月还没有账单记录哦~</Center></div> :
-          getGroupedRecords().map((group, index) => {
-            return (
-              <li key={index}>
-                <div className="topBar">
-                  {beautify(group.title)}
-                  <span>支出：{group.totalExpend} 收入：{group.totalIncome}</span>
-                </div>
-                <ol>
-                  {
-                    group.items.map((item) => {
-                      return (
-                        <Link className="record" to={'/statistics/' + item.id} key={item.id}>
-                          <span className="tagName">{item.tagName}</span>
-                          <span className="notes oneLine">{item.note}</span>
-                          <span className="amount">{item.category}{item.amount}</span>
-                        </Link>
-                      );
-                    })
-                  }
-                </ol>
-              </li>
-            );
-          })
+            getGroupedRecords().map((group, index) => {
+              return (
+                <li key={index}>
+                  <div className="topBar">
+                    {beautify(group.title)}
+                    <span>支出：{group.totalExpend} 收入：{group.totalIncome}</span>
+                  </div>
+                  <ol>
+                    {
+                      group.items.map((item) => {
+                        return (
+                          <Link className="record" to={'/statistics/' + item.id} key={item.id}>
+                            <span className="tagName">{item.tagName}</span>
+                            <span className="notes oneLine">{item.note}</span>
+                            <span className="amount">{item.category}{item.amount}</span>
+                          </Link>
+                        );
+                      })
+                    }
+                  </ol>
+                </li>
+              );
+            })
         }
       </ol>
     </Items>
   );
+  type Category = '-' | '+'
+  const [type, setType] = useState('-' as Category);
+  const onChange = (value: Category) => {
+    setType(value);
+  };
 
+  const getKeyValueList = () => {
+    const hash:{[K:string]:number} = {};
+    const classifiedList = records.filter(r => parseInt(r.createAt.split('/')[0]) === year
+      && parseInt(r.createAt.split('/')[1]) === month && r.category === type);
+    classifiedList.forEach(r => {
+      const key = r.tagName;
+      if(key in hash) {
+        hash[key] += r.amount;
+      } else {
+        hash[key] = r.amount;
+      }
+    });
+    return hash;
+  }
+  const [option, setOption] = useState({});
+
+  useEffect(()=> {
+    setOption(
+      {
+        color: '#999',
+        grid:{
+          top: 20,
+          bottom: 45
+        },
+        xAxis: {
+          type: 'category',
+          data: Object.keys(getKeyValueList())
+        },
+        yAxis: {
+          type: 'value',
+          show: false
+        },
+        series: [{
+          data: Object.values(getKeyValueList()),
+          type: 'bar',
+          label: {
+            show: true,
+            position: 'top'
+          },
+        }],
+      }
+    )
+  }, [year, month, category, type]) // eslint-disable-line react-hooks/exhaustive-deps
   const chartsContents = () => (
+    getGroupedRecords().length <= 0 ? <div><Space/><Space/><Center>本月还没有账单记录哦~</Center></div> :
     <div>
-      这里显示图表
+      <Chart option={option} category={type} onChange={(type) => onChange(type)}/>
     </div>
   );
 

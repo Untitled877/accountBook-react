@@ -67,6 +67,14 @@ const Tag: React.FC = () => {
     }
   }
 
+  const handleDelete = () => {
+    if (window.confirm('确定删除该标签吗？')) {
+      deleteTag(tag.id);
+    } else {
+      return;
+    }
+  }
+
   const tagContent = (tag: { id: number; text: string }) => (
     <div>
       <InputWrapper>
@@ -82,7 +90,7 @@ const Tag: React.FC = () => {
       <Center>
         <Space/>
         <Space/>
-        <Button onClick={()=>deleteTag(tag.id)}>删除标签</Button>
+        <Button onClick={handleDelete}>删除标签</Button>
       </Center>
     </div>
   );

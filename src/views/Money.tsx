@@ -68,7 +68,7 @@ const Money: React.FC = () => {
 
   return (
     <Wrapper>
-      <TopBar title="记一笔帐" value={selected.category}
+      <TopBar title={isEdit ? '编辑记录' :'记一笔帐'} value={selected.category}
               onChange={category => onChange({category})}/>
       <Main>
         <TagsSection category={selected.category}
