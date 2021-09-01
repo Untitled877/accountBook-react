@@ -11,10 +11,15 @@ const NumberPadWrapper = styled.section`
     text-align: right;
     border-top: 1px solid rgba(187, 187, 187, 0.7);
   }
+  @media (max-height: 600px) {
+    .output {
+      font-size: 25px;
+    }
+  }
 
   .buttons {
     border-top: 1px solid rgba(187, 187, 187, 0.7);
-
+    
     > button {
       width: 25%;
       font-size: 20px;
@@ -23,7 +28,7 @@ const NumberPadWrapper = styled.section`
       float: left;
       background: transparent;
       border: none;
-
+      
       &.ok {
         float: right;
       }
@@ -57,6 +62,12 @@ const NumberPadWrapper = styled.section`
 
       &:nth-child(4) {
         background: #f6f6f6;
+      }
+    }
+    
+    @media (max-height: 600px) {
+      > button {
+        line-height: 20px;
       }
     }
   }

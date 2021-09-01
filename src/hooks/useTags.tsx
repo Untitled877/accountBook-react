@@ -63,6 +63,7 @@ const useTags = () => {
         return;
       } else {
         setTags([...tags, {id: createId(), category: category, iconName: 'default', text: tagName}]);
+        window.alert('标签已保存');
       }
     } else {
       return;

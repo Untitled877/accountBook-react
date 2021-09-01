@@ -19,7 +19,8 @@ const TagsWrapper = styled.section`
       display: flex;
       flex-wrap: wrap;
       padding: 10px 10px;
-      >.tagWrapper {
+
+      > .tagWrapper {
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -28,6 +29,10 @@ const TagsWrapper = styled.section`
         width: 25%;
         font-size: 12px;
         margin-bottom: 10px;
+
+        > span {
+          white-space: nowrap;
+        }
 
         &.selected {
           .icon-wrapper {
@@ -46,9 +51,17 @@ const TagsWrapper = styled.section`
             width: 40px;
             margin: 10px;
           }
+
+          @media (max-height: 600px) {
+            .icon {
+              height: 35px;
+              width: 35px;
+            }
+          }
         }
       }
     }
+
   }
 `;
 

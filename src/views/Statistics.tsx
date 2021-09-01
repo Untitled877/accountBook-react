@@ -46,6 +46,7 @@ const Items = styled.div`
 `;
 
 const Statistics: React.FC = () => {
+  const h = document.documentElement.clientHeight;
   const {records} = useRecords();
 
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -207,7 +208,11 @@ const Statistics: React.FC = () => {
         },
         xAxis: {
           type: 'category',
-          data: Object.keys(getKeyValueList())
+          data: Object.keys(getKeyValueList()),
+          axisLabel:{
+            interval: 0,
+            rotate: 22
+          }
         },
         yAxis: {
           type: 'value',
@@ -232,9 +237,8 @@ const Statistics: React.FC = () => {
   );
 
   return (
-    <Wrapper>
+    <Wrapper style={{height: h + 'px'}}>
       <TopDiv>
-        <div className="title">账单详情</div>
         <div className="info-wrapper">
           <div className="dateSelector">
             <DatePicker

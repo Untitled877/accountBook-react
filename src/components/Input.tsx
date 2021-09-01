@@ -15,6 +15,11 @@ const Label = styled.label`
     background: none;
     border: none;
   }
+  @media (max-height: 600px) {
+    > input {
+      height: 36px;
+    }
+  }
 `;
 type Props = {
   label: string;

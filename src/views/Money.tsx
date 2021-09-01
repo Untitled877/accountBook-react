@@ -31,6 +31,7 @@ const defaultFormData = {
 };
 
 const Money: React.FC = () => {
+  const h = document.documentElement.clientHeight;
   const [selected, setSelected] = useState(defaultFormData);
   const [createAt, setCreateAt] = useState(new Date());
   const {addRecord, updateRecord} = useRecords();
@@ -65,12 +66,11 @@ const Money: React.FC = () => {
     }
   };
 
-
   return (
-    <Wrapper>
-      <TopBar title={isEdit ? '编辑记录' :'记一笔帐'} value={selected.category}
+    <Wrapper style={{height: h + 'px'}}>
+      <TopBar value={selected.category}
               onChange={category => onChange({category})}/>
-      <Main>
+      <Main scrollTop={9999}>
         <TagsSection category={selected.category}
                      value={selected.tagId}
                      onChange={tagId => onChange({tagId})}/>

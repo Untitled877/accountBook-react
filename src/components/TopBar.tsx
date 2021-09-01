@@ -3,16 +3,6 @@ import styled from 'styled-components';
 
 const TopBarWrapper = styled.div`
   background: #F6F6F6;
-
-  .title {
-    font-size: 24px;
-    font-family: 'haibao', monospace;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 10px 0;
-  }
-
   ul {
     display: flex;
     text-align: center;
@@ -39,7 +29,6 @@ const TopBarWrapper = styled.div`
 `;
 
 type Props = {
-  title: string
   value: '-' | '+'
   onChange: (value: '-' | '+') => void
 }
@@ -50,7 +39,6 @@ const TopBar: React.FC<Props> = (props) => {
   const category = props.value;
   return (
     <TopBarWrapper>
-      <div className="title">{props.title}</div>
       <ul className="tabs">
         {categoryList.map(c =>
           <li key={c}

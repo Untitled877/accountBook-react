@@ -1,6 +1,5 @@
 import React from 'react';
 import {Carousel} from 'element-react';
-
 import 'element-theme-default';
 import Icon from 'components/Icon';
 import {TagsWrapper} from './TagsSection/TagsWrapper';
@@ -60,7 +59,7 @@ const TagsSection: React.FC<Props> = (props) => {
 
   return (
     <TagsWrapper>
-      <Carousel height="200px" className="carousel" autoplay={false}>
+      <Carousel height={document.documentElement.clientHeight < 600 ? '180px' : '200px'} className="carousel" autoplay={false}>
         {
           getItemNum().map(i => {
             return (

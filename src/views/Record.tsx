@@ -68,6 +68,7 @@ type Params = {
 }
 
 const Record: React.FC = () => {
+  const h = document.documentElement.clientHeight;
   const {getRecord, deleteRecord} = useRecords();
   let {recordId: recordIdString} = useParams<Params>();
   const record = getRecord(parseInt(recordIdString))[0];
@@ -103,7 +104,7 @@ const Record: React.FC = () => {
     </div>
   );
   return (
-    <RecordWrapper>
+    <RecordWrapper style={{height: h + 'px'}}>
       <Header>
         <Icon name="left" onClick={onClickBack}/>
         <span className="title">

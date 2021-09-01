@@ -29,6 +29,7 @@ const TagList = styled.ol`
 `;
 
 const Tags:React.FC = () => {
+  const h = document.documentElement.clientHeight;
   const [category, setCategory] = useState<'+'|'-'>('-');
   const {tags, addTag} = useTags();
   const onChange = () => {
@@ -36,8 +37,8 @@ const Tags:React.FC = () => {
   }
   const tagList = tags.filter(tag => tag.category === category);
   return (
-    <Wrapper>
-      <TopBar title="标签管理" value={category} onChange={onChange}/>
+    <Wrapper style={{height: h + 'px'}}>
+      <TopBar value={category} onChange={onChange}/>
       <Main>
         <TagList>
           {tagList.map(tag =>
@@ -48,12 +49,13 @@ const Tags:React.FC = () => {
               </Link>
             </li>
           )}
+          <Center>
+            <Space />
+            <Space />
+            <Button onClick={()=>addTag(category)}>新增标签</Button>
+          </Center>
         </TagList>
-        <Center>
-          <Space />
-          <Space />
-          <Button onClick={()=>addTag(category)}>新增标签</Button>
-        </Center>
+
       </Main>
       <Nav/>
     </Wrapper>

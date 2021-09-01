@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Wrapper} from 'components/Wrapper';
 import {Nav} from 'components/Nav';
 import {Main} from 'components/Main';
@@ -38,33 +38,13 @@ const InputWrapper = styled.div`
 `;
 
 const Tag: React.FC = () => {
+  const h = document.documentElement.clientHeight;
   const {findTag, updateTag, deleteTag} = useTags();
   let {id: idString} = useParams<Params>();
   const tag = findTag(parseInt(idString));
 
-  const [inChinese, setInChinese] = useState(false);
-  const handleCompositionStart = () => {
-    setInChinese(true);
-  }
   const handleOnChange = (e: any) => {
-    let input = e.target.value;
-    if(!inChinese) {
-      if(input.length > 4) {
-        return window.alert('标签名不要超过4个字')
-      }
-      updateTag(tag.id, e.target.value);
-    }
-    updateTag(tag.id, e.target.value.substr(0,4));
-  }
-
-  const handleCompositionEnd = (e: any) => {
-    setInChinese(false);
-    const input = e.target.value;
-    if(input.length > 4) {
-      return window.alert('标签名不可超过4个字');
-    } else {
-      updateTag(tag.id, e.target.value.substr(0,4));
-    }
+    updateTag(tag.id, e.target.value);
   }
 
   const handleDelete = () => {
@@ -81,9 +61,7 @@ const Tag: React.FC = () => {
         <Input label="标签名："
                type="text"
                value={tag.text}
-               placeholder="不要超过四个字哦~"
-               onCompositionStart={handleCompositionStart}
-               onCompositionEnd={handleCompositionEnd}
+               placeholder="最好不要超过四个字哦~"
                onChange={handleOnChange}
         />
       </InputWrapper>
@@ -99,7 +77,7 @@ const Tag: React.FC = () => {
     history.goBack();
   }
   return (
-    <Wrapper>
+    <Wrapper style={{height: h + 'px'}}>
       <Header>
         <Icon name="left" onClick={onClickBack}/>
         <span className="title">
